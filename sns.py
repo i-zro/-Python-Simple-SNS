@@ -52,14 +52,29 @@ class Member:
             if _.id==id and _.password==password:
                 return _
 
-    def update_member_info(self, name="",profile=""):
+    def update_member_name(self, name=""):
         self.name=name
+
+    def update_member_profile(self,profile=""):
         self.profile=profile
+
+    def update_member_password(self,password=""):
+        self.password=password
 
     def show_member_info(self):
         print(self.id,'님의 프로필을 출력합니다.')
         print('이름 : ',self.name)
         print('프로필 : ',self.profile)
+
+    @staticmethod
+    def remove_member(member):
+        print("정말 탈퇴하시겠습니까?")
+        char=input("(Y/N)\n-->")
+        if(char=='Y'):
+            Member.info.remove(member)
+        else:
+            return 9;
+
 
 def join_us():
     id=input("ID (e-mail) 입력해주세요: ")
@@ -113,6 +128,24 @@ def show_members():
     for member in Member.info:
         member.show_member_info()
 
+def update_member(member):
+    while True:
+        op=input("\n1.이름변경"+"(현재이름 : "+member.name+")"+"\n2.소개글 변경"+"(현재소개글 : "+member.profile+")"+"\n3.비밀번호 변경\n4.종료\n-->")
+        if '1' in op:
+            name=input("변경하실 이름을 입력해주세요 : ")
+            member.update_member_name(name)
+        elif '2' in op:
+            profile=input("변경하실 소개글을 입력해주세요 : ")
+            member.update_member_profile(profile)
+        elif '3' in op:
+            password=input("현재 비밀번호를 입력해주세요.")
+            if(password==member.password):
+                p_w=input("바꾸실 비밀번호를 입력해주세요.")
+                member.update_member_password(p_w)
+            else:
+                print("비밀번호가 틀렸습니다!")
+        else:break
+
 def show_timeline():
     print("타임라인을 출력합니다.")
     for i,contents in enumerate(Timeline.timeline):
@@ -128,11 +161,16 @@ while True:
         if member==None:continue #로그인 실패시
         else:
             while True:
-                menu=input('\n1:글작성\n2:댓글작성\n3:좋아요작성\n4:타임라인 보기\n5:로그아웃\n-->')
+                menu=input('\n1:글작성\n2:댓글작성\n3:좋아요작성\n4:타임라인 보기\n5:회원정보수정\n6:회원탈퇴\n7:로그아웃\n-->')
                 if '1' in menu: write_story(member)
                 elif '2' in menu:write_message(member)
                 elif '3' in menu:write_like(member)
                 elif '4' in menu:show_timeline()
+                elif '5' in menu:update_member(member)
+                elif '6' in menu:
+                    check=member.remove_member(member)
+                    if(check!=9):
+                        break
                 else:break
     elif '3' in menu:show_members()
     else:break
