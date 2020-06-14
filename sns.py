@@ -1,14 +1,14 @@
 import datetime
 
 class Timeline:
-    timeline=[]
+    timeline=[] #타임라인 리스트
 
     def __init__(self,member,text, time):
         self.member=member
         self.time=time
         self.text=text
-        self.good_response=[]
-        self.message=[]
+        self.likey=[] #좋아요 누른 사람 목록
+        self.message=[] #얘도 인스턴스 별로 나뉘니까
 
     @staticmethod
     def input_timeline(member,text):
@@ -22,14 +22,24 @@ class Timeline:
         self.message.append((member.id,message))
 
     def add_good_response(self,member):
-        self.good_response.append(member.id)
+        self.likey.append(member.id)
 
     def show_story(self):
         print(self.member.id,"님의 게시물")
         print('내용:', self.text)
         print('작성 시간:', self.time)
-        for p in self.good_response : print(p,'님이 이 글을 좋아합니다')
-        for p,m in self.message : print(p,'님: ',m)
+        lnum=0 #좋아요 수
+        mnum=0 #댓글 수
+        for _ in self.likey :
+            lnum+=1
+        for _ in self.message :
+            mnum+=1
+        print("♥좋아요 수 : ",lnum,"\t","댓글 수 : ",mnum,"\n")
+        for person in self.likey :
+            print(person,'님이 이 글을 좋아합니다')
+        for person,message in self.message :
+            print(person,'님: ',message)
+
         print()
 
 class Member:
@@ -73,7 +83,7 @@ class Member:
         if(char=='Y'):
             Member.info.remove(member)
         else:
-            return 9;
+            return 9; #9가 반환됐다 = 회원탈퇴가 되지 않았다.
 
 
 def join_us():
@@ -121,7 +131,8 @@ def write_like(member):
     if index>=0 and index<len(Timeline.timeline):
         story=Timeline.timeline[index]
         story.add_good_response(member)
-    else:print("존재하지 않는 게시글입니다.")
+    else:
+        print("존재하지 않는 게시글입니다.")
 
 def show_members():
     print("회원 정보를 출력합니다.")
@@ -170,7 +181,7 @@ while True:
                 elif '6' in menu:
                     check=member.remove_member(member)
                     if(check!=9):
-                        break
+                        break #9가 반환되지 않았다 =  회원탈퇴가 되었다
                 else:break
     elif '3' in menu:show_members()
     else:break
